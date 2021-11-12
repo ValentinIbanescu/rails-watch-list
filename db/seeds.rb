@@ -13,16 +13,15 @@ url = 'http://tmdb.lewagon.com/movie/top_rated'
 # puts "#{results["results"][1]["title"]} - #{results["results"][1]["release_date"]} - #{results["results"][1]["overview"]} - #{results["results"][1]["poster_path"]} "
 
 puts 'destroying movies'
-Movie.destroy_all
 puts 'creating movies'
 10.times do |i|
-  movies = JSON.parse(open("#{url}?page=#{i + 1}").read)['results']
+  movies = JSON.parse(URI.open("#{url}?page=#{i + 1}").read)['results']
   movies.each do |m|
     main_url = "https://image.tmdb.org/t/p/original"
     Movie.create(
       title: m['title'],
       overview: m['overview'],
-      poster_url: "#{[main_url]}#{m['poster_path']}",
+      poster_url: "#{main_url}#{m['poster_path']}",
       rating: m['vote_average']
     )
   end
